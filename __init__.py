@@ -31,10 +31,12 @@ def play():
     items = []
     items.append(Item('heart.png', 100, 500))
     items.append(Item('heart.png', 825, 285))
+    #image taken from dreamincode.net walkthrough a platform game made with pygame
     
     player = Girl()
     prince = Prince()
     bg = pygame.image.load('woods.jpg').convert()
+    #image taken from http://www.geocities.jp/kajiji21/haikei/mori_hiru.jpg
     bgX = 0
     
         
@@ -46,6 +48,8 @@ def play():
                 running = False
 
         #side scroll
+        
+        #if too far right of screen
         if ((not player.isWolf) and player.rectPrin.right > 600) or \
             (player.isWolf and player.rectWolf.right > 600):
             shift = -(player.rectPrin.right - 600)
@@ -59,6 +63,7 @@ def play():
             for item in items:
                 item.rect.x += shift
             prince.princeRect.x += shift
+        #if too far left of screen
         elif ((not player.isWolf) and player.rectPrin.left <= 150 and bgX < 0) or\
             (player.isWolf and player.rectWolf.left <= 150 and bgX < 0):
             shift = 150 - player.rectPrin.left

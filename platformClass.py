@@ -27,6 +27,7 @@ class Platform():
             elif player.rectWolf.collidepoint(self.rect.bottomright):
                 player.rectPrin.left = self.rect.right
                 player.rectWolf.left = self.rect.right
+                
         #prince
         #forward
         if prince.princeRect.collidepoint(self.rect.bottomleft):

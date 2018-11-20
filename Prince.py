@@ -5,6 +5,7 @@ import pygame
 class Prince ():
     def __init__(self):
         prince = pygame.image.load("prince.png")
+        #image from the PlayStation Store
         self.prince = pygame.transform.scale(prince, (100, 100))
         self.princeRect = self.prince.get_rect(midbottom = (300, 500))
         
@@ -29,7 +30,8 @@ class Prince ():
             self.speed = -3
         if keys[pygame.K_w] and self.onGround(platRects):
             self.jump = True
-            
+    
+    #taken from dreamincode.net  Walkthrough a Platform Game made with pygame #1      
     def onGround(self, platRects):
         collision = self.princeRect.collidelist(platRects)
         if collision > -1: return True

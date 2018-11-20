@@ -5,9 +5,11 @@ class Girl ():
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         princess = pygame.image.load('hime.png')
+        #image from PlayStation Store 
         self.princess = pygame.transform.scale(princess, (100, 100))
         self.rectPrin = self.princess.get_rect(midbottom=(450,500))
         self.wolf = pygame.image.load('test.png')
+        #image from the official twitter account (@usotsukihime)
         self.rectWolf = self.wolf.get_rect\
             (midbottom=(self.rectPrin.centerx, self.rectPrin.bottom))
         self.isWolf = False
