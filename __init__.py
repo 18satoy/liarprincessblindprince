@@ -5,6 +5,7 @@ from Girl import *
 from platformClass import *
 from Prince import *
 from itemClass import *
+from stageGenerator import *
 
 def play():
 
@@ -14,7 +15,7 @@ def play():
     
     platforms = []
     platforms.append(Platform(1800, 100, 450, 600, (0, 0, 0)))
-    platforms.append(Platform(200, 15, 700, 450, (0, 0, 0)))
+    platforms.append(Platform(200, 15, 1100, 450, (0, 0, 0)))
     platforms.append(Platform(300, 15, 800, 300, (0, 0, 0)))
     platforms.append(Platform(250, 15, 1400, 450, (0, 0, 0)))
     platforms.append(Platform(100, 15, 1500, 375, (0, 0, 0)))
@@ -24,7 +25,7 @@ def play():
     
     walls = []
     walls.append(Wall(25, 180, 790, 300, (0, 0, 0)))
-    walls.append(Wall(25, 180, 890, 300, (0, 0, 0)))
+    walls.append(Wall(25, 180, 890, 500, (0, 0, 0)))
     walls.append(Wall(25, 180, 1660, 480, (0, 0, 0)))
     wallRect = [wall.rect for wall in walls]
     
@@ -35,7 +36,7 @@ def play():
     
     player = Girl()
     prince = Prince()
-    bg = pygame.image.load('woods.jpg').convert()
+    bg = pygame.image.load('bg.png').convert()
     #image taken from http://www.geocities.jp/kajiji21/haikei/mori_hiru.jpg
     bgX = 0
     
