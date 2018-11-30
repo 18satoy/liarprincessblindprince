@@ -4,17 +4,18 @@ import pygame
 class Girl ():
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        princess = pygame.image.load('hime.png')
+        self.princess = pygame.image.load('princess.png')
         #image from PlayStation Store 
-        self.princess = pygame.transform.scale(princess, (100, 100))
         self.rectPrin = self.princess.get_rect(midbottom=(450,500))
-        self.wolf = pygame.image.load('test.png')
+        self.wolf = pygame.image.load('wolf.png')
         #image from the official twitter account (@usotsukihime)
         self.rectWolf = self.wolf.get_rect\
             (midbottom=(self.rectPrin.centerx, self.rectPrin.bottom))
         self.isWolf = False
         
-        self.keyCount = 0
+        #multiplayer
+        self.PID = "Princess"
+        
         #movement
         
         self.isMoving = False
@@ -22,8 +23,9 @@ class Girl ():
         self.moveRight = False
         self.jump = False
         self.wolfJump = False
-        self.attack = False
+        self.isAttacking = False
         
+        self.hit = 0
         self.jumpY = 0
         self.speed = 0
     
@@ -35,18 +37,18 @@ class Girl ():
         #movement
         if keys[pygame.K_RIGHT]:
             self.moveRight = True
-            self.speed = 5
+            self.speed = 10
         elif keys[pygame.K_LEFT]:
             self.moveLeft = True
-            self.speed = -5
+            self.speed = -10
         if keys[pygame.K_SPACE] and self.onGround(platRects):
             if self.isWolf:
                 self.wolfJump = True
             else: self.jump = True
         if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
             self.isWolf = not self.isWolf
-        if keys[pygame.K_KP_ENTER]:
-            self.attack = True
+        if keys[pygame.K_SLASH]:
+            self.isAttacking = True
         
     
     #taken from dreamincode.net  Walkthrough a Platform Game made with pygame #1       
@@ -57,7 +59,7 @@ class Girl ():
         if collision > -1: return True
         else: return False
     
-    def movement(self, platRects, bg):
+    def movement(self, platRects):
         #left, right, jump
         if self.moveRight and self.rectPrin.right < 900:
             self.rectPrin.centerx += self.speed
@@ -81,20 +83,39 @@ class Girl ():
             if self.jumpY >= 0:
                 for plat in platRects:
                     if not self.isWolf:
-                        if plat.collidepoint(self.rectPrin.bottomright):
+                        if plat.collidepoint(self.rectPrin.midbottom):
                             self.rectPrin.bottom = plat.top + 1
                             self.rectWolf.bottom = plat.top + 1
                     else:
-                        if plat.collidepoint((self.rectWolf.bottomright)):
+                        if plat.collidepoint((self.rectWolf.midbottom)):
                             self.rectPrin.bottom = plat.top + 1
                             self.rectWolf.bottom = plat.top + 1
             
                 self.jumpY = 0
             else:
-                self.rectPrin.top = \
-                    platRects[self.rectPrin.collidelist(platRects)].bottom
-                self.rectWolf.top = \
-                    platRects[self.rectWolf.collidelist(platRects)].bottom
+                #when height not enough to get on the upper platform
+                if self.isWolf:
+                    plat = platRects[self.rectPrin.collidelist(platRects)]
+                    if self.rectWolf.centerx > plat.right:
+                        self.rectWolf.left = plat.right
+                        self.rectPrin.left = plat.right
+                    elif self.rectWolf.centerx < plat.left:
+                        self.rectWolf.right = plat.left
+                        self.rectPrin.right = plat.left
+                    else:
+                        self.rectWolf.top = plat.bottom
+                        self.rectPrin.top = plat.bottom
+                else:
+                    plat = platRects[self.rectPrin.collidelist(platRects)]
+                    if self.rectPrin.centerx > plat.right:
+                        self.rectWolf.left = plat.right
+                        self.rectPrin.left = plat.right
+                    elif self.rectPrin.centerx < plat.left:
+                        self.rectPrin.right = plat.left
+                        self.rectWolf.right = plat.left
+                    else:
+                        self.rectWolf.top = plat.bottom
+                        self.rectPrin.top = plat.bottom
                 self.jumpY = 2
         else:
             self.jumpY += 2
@@ -104,10 +125,17 @@ class Girl ():
         if self.onGround(platRects):
             self.isWolf = not self.isWolf
            
-    def attack(self):
+    def attack(self, enemies):
         #work in progress
-        if self.isWolf:
-            pass
+        if self.isWolf and self.isAttacking:
+            for enemy in enemies:
+                if self.rectWolf.colliderect(enemy[0].enemyRect):
+                    self.hit += 1
+                    enemy[0].enemyRect.x += (-enemy[0].speed * 10)
+                    if self.hit >= 3:
+                        enemies.remove(enemy)
+                        self.hit = 0
+        self.isAttacking = False
     
     def draw(self, screen, bg):
         if not self.isWolf: 
